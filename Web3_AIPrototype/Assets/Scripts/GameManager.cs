@@ -12,7 +12,8 @@ public class GameManager : NetworkBehaviour
         base.Spawned();
 
         Transform spawnPosition = spawnPositions[Runner.LocalPlayer.PlayerId-1];
-        NetworkObject playerObject = Runner.Spawn(PlayerPrefab,spawnPosition.position,spawnPosition.rotation);
+        
+        NetworkObject playerObject = Runner.Spawn(PlayerPrefab,spawnPosition.position,spawnPosition.rotation,Runner.LocalPlayer);
         Runner.SetPlayerObject(Runner.LocalPlayer,playerObject);
 
     }
