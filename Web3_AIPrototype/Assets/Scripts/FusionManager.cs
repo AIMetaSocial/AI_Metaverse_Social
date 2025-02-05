@@ -52,7 +52,7 @@ public class FusionManager : MonoBehaviour
         {
             GameMode = gameMode,
             //SessionName = gameModeIdentifier,
-            SessionName = "Match" + UnityEngine.Random.Range(1, 9999).ToString(),
+            //SessionName = "Match" + UnityEngine.Random.Range(1, 9999).ToString(),
             PlayerCount = maxPlayers,
             Scene = SceneRef.FromIndex(GeneralSettings.GAMESCENE),       
 
