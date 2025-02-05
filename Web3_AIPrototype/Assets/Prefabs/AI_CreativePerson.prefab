@@ -175,9 +175,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80f08421324a39d40b65541147c9e8a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <aiPlayerName>k__BackingField: ChatGPT Player 1
+  <promptForInit>k__BackingField: You Are An Image Generator.
+  <aiPlayerName>k__BackingField: Image Generator 1
   <chatCost>k__BackingField: 0
   <chatCamera>k__BackingField: {fileID: 299032344}
+  <AiType>k__BackingField: 1
 --- !u!1001 &6078541359670413801
 PrefabInstance:
   m_ObjectHideFlags: 0

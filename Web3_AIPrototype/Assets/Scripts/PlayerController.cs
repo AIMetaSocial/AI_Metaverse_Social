@@ -95,7 +95,7 @@ public class PlayerController : NetworkBehaviour
 
         moveAmount = playerInputManager.GetMoveAmount();
         jumpPressed = playerInputManager.GetJumpButton();
-        if(!lastJumpPressed && jumpPressed && isGrounded){
+        if(!lastJumpPressed && jumpPressed && isGrounded && playerState == PlayerState.IDLE){
            lastJumpPressed =true;
         }
 
