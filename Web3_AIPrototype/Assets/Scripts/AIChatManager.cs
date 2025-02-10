@@ -15,14 +15,26 @@ public class AIChatManager : MonoBehaviour
 
     public static event Action<bool> OnChatToggleEvent;
     [SerializeField] AI_GeneratorPerson currentAIGenerator;
+
+
+    
     internal async void Init(AI_GeneratorPerson lastTriggeredAIPlayer)
     {
         if(currentAIGenerator == null || currentAIGenerator != lastTriggeredAIPlayer){
             ChatGPTIntegration.Init();
 
+            //TODO
             //DELETE OLD CHAT
-
             //DELETE OLD DOWNLOADED TEXTURES
+            foreach (Transform _child in parentForMessages)
+            {   
+                if(_child.GetChild(0).GetChild(0).TryGetComponent<RawImage>(out RawImage raw)){
+                    DestroyImmediate(raw.texture);
+                }
+
+                Destroy(_child.gameObject);
+            }
+           
         }
 
         currentAIGenerator  = lastTriggeredAIPlayer;
@@ -73,8 +85,8 @@ public class AIChatManager : MonoBehaviour
             }
             case AI_TYPE.IMAGE:{
 
-                prompt = $"{prompt}, cartoon-style";                  
                 GenerateMyBox(prompt);   
+                prompt = $"{prompt}, cartoon-style";                  
                 GenerateAIBoxImage();   
                 break;
             }
@@ -190,18 +202,20 @@ public class AIChatManager : MonoBehaviour
     private void SetAiMessage(Texture2D _img)
     {
         if (lastGeneratedAIMessage != null)
-        {
+        {   
+            RawImage rawImage = lastGeneratedAIMessage.transform.GetChild(0).GetChild(0).GetComponent<RawImage>();
 
-            lastGeneratedAIMessage.transform.GetChild(0).GetChild(0).GetComponent<RawImage>().texture = _img;
-            lastGeneratedAIMessage.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
-            
+            rawImage.texture = _img;            
+            rawImage.gameObject.SetActive(true);            
 
             Destroy(lastGeneratedAIMessage.transform.GetChild(0).GetChild(1).gameObject);
-
+            rawImage.GetComponent<Button>().onClick.AddListener(()=> OpenImageInFullScreen(rawImage));  
         }
+    }
 
-
-
+    private void OpenImageInFullScreen(RawImage rawImage)
+    {
+        GameUI.Instance?.OpenFullPreview(rawImage.texture);
     }
 
     [SerializeField] float maxWidth;

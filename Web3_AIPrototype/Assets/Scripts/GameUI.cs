@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour
 {
@@ -10,7 +12,11 @@ public class GameUI : MonoBehaviour
         Instance = this;
     }
 
+    [SerializeField] TMP_Text[] coinText;
+    [SerializeField] TMP_Text[] tokenText;
 
+
+    
     [Header("PROMT FOR TRIGGER AI")]
     [SerializeField] GameObject PromptPanelForAIChat;
     [SerializeField] TMP_Text aiPersonName;    
@@ -77,13 +83,37 @@ public class GameUI : MonoBehaviour
         
     }
 
-    
-        
+
+
+   
+
+
+
     #endregion
 
     #region Shop Panel
+    [Header("Shop")]
     [SerializeField] CanvasGroup shopPanel;
 
+        
+    #endregion
+
+    #region Full Preview
+    [Space(20f)]
+    [Header("Full Preview")]
+    [SerializeField] GameObject fullPreviewPanel;  
+    [SerializeField] RawImage fullPriviewRAW;  
+    internal void OpenFullPreview(Texture texture)
+    {
+        fullPriviewRAW.texture = texture;
+        fullPreviewPanel.SetActive(true);
+    }
+    public async void MintNFT(){
+
+    }
+    public void CloseFullPreview(){
+        fullPreviewPanel.SetActive(false);
+    }
         
     #endregion
     
