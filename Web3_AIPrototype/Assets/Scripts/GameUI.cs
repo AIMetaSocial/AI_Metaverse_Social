@@ -93,7 +93,10 @@ public class GameUI : MonoBehaviour
 
     #region Shop Panel
     [Header("Shop")]
-    [SerializeField] CanvasGroup shopPanel;
+    [SerializeField] CanvasGroup inAppPanel;
+    public void OpenInApp(){
+        LeanTweenExtension.OpenPopupWithAlpha(inAppPanel);
+    }
 
         
     #endregion
