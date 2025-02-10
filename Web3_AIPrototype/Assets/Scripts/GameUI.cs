@@ -55,4 +55,36 @@ public class GameUI : MonoBehaviour
         PromptPanelForAIChat.SetActive(false);   
     }
 
+    #region Menu Panel
+    [SerializeField] CanvasGroup menuPanel;
+    public void OpenMenuPanel(){
+        LeanTweenExtension.OpenPopupWithAlpha(menuPanel);
+    }    
+    public void CloseMenuPanel(){
+        LeanTweenExtension.ClosePopupWithAlpha(menuPanel);
+    }    
+
+    public void MainMenu(){
+
+    }
+    public void OpenSettings(){
+        SettingsPanel.Instance?.OpenSettings();
+    }
+    public void OpenEditProfile(){
+        EditProfilePanel.Instance?.OpenEditProfilePanel();
+    }
+    public void OpenShop(){
+        
+    }
+
+    
+        
+    #endregion
+
+    #region Shop Panel
+    [SerializeField] CanvasGroup shopPanel;
+
+        
+    #endregion
+    
 }
