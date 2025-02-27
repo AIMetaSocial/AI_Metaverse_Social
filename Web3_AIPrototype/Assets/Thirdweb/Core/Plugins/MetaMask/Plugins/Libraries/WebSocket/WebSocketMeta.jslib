@@ -1,5 +1,5 @@
 
-var LibraryWebSocket = {
+var LibraryWebSocketMeta = {
   $webSocketState: {
     /*
      * Map of instances
@@ -300,5 +300,5 @@ var LibraryWebSocket = {
   },
 };
 
-autoAddDeps(LibraryWebSocket, '$webSocketState');
-mergeInto(LibraryManager.library, LibraryWebSocket);
+autoAddDeps(LibraryWebSocketMeta, '$webSocketState');
+mergeInto(LibraryManager.library, LibraryWebSocketMeta);

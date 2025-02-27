@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System;
 using Thirdweb;
 using TMPro;
@@ -94,6 +95,7 @@ public class BlockChainConnections : MonoBehaviour
 
                 var test3 = await contract.Read<int[]>("getOwnedNFTs", inputParams1);
 
+
                 for (int i = 0; i < test3.Length; i++)
                 {
                     Debug.Log("Value " + test3[i]);
@@ -115,6 +117,13 @@ public class BlockChainConnections : MonoBehaviour
                 var test4 = await contract.Write("purchaseCoins", new TransactionRequest() { value = Convert.ToDecimal(wei).ToString() }, inputParams2);
                 updater.text = test4.ToString();
 
+                Debug.Log("Status 1 " + test4.receipt.status);
+                Debug.Log("Status 01 " + test4.receipt.confirmations); 
+
+                await UniTask.Delay(5000);
+                var check = await Transaction.WaitForTransactionResult(test4.receipt.transactionHash, await ThirdwebManager.Instance.SDK.Wallet.GetChainId());
+                Debug.Log("Status 2 " + test4.receipt.status);
+                Debug.Log("Status 02 " + test4.receipt.confirmations);
                 break;
             case 6:
                 /*                float _amount2 = 0.00001f;
