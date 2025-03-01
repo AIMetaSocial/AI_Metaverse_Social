@@ -49,7 +49,7 @@ public class ChatGPTIntegration : MonoBehaviour
             
 
             
-
+        try{
 
 
         DalleRequest requestData = new DalleRequest { prompt = prompt };
@@ -86,6 +86,11 @@ public class ChatGPTIntegration : MonoBehaviour
             Debug.LogError("Error: " + request.error + "\nResponse: " + request.downloadHandler.text);
         }
         return null;
+        }
+        catch{
+            return null;
+        }
+        
 
     }
     public static async UniTask<ImageRespnseData> LoadImageFromURL(string imageUrl,string promptUserAdded)

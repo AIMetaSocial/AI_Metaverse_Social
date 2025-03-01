@@ -7221,8 +7221,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 857897194}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.17179777, y: -0.7791873, z: 0.2425742, w: -0.55182457}
-  m_LocalPosition: {x: 43.34207, y: 40.517693, z: 55.702896}
+  m_LocalRotation: {x: 0.027007736, y: -0.25365892, z: 0.0070853443, w: 0.96689063}
+  m_LocalPosition: {x: 74.76381, y: 32.938442, z: 17.029535}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14839,8 +14839,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1964869390}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.17179777, y: -0.7791873, z: 0.2425742, w: -0.55182457}
-  m_LocalPosition: {x: 43.13858, y: 39.694397, z: 56.83461}
+  m_LocalRotation: {x: 0.027007736, y: -0.25365892, z: 0.0070853443, w: 0.96689063}
+  m_LocalPosition: {x: 73.92, y: 31.94, z: 16.49}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -14848,7 +14848,7 @@ Transform:
   - {fileID: 202018331}
   - {fileID: 379511502}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 3.2, y: -29.4, z: 0}
 --- !u!114 &1964869393
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16293,11 +16293,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1637961643326252647, guid: 07d479d53f6b3cb458a5ef31b254d268,
-        type: 3}
-      propertyPath: m_fontColor32.rgba
-      value: 4278190080
-      objectReference: {fileID: 0}
     - target: {fileID: 3767152268776904930, guid: 07d479d53f6b3cb458a5ef31b254d268,
         type: 3}
       propertyPath: m_Name
@@ -16402,11 +16397,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8777403611254964033, guid: 07d479d53f6b3cb458a5ef31b254d268,
-        type: 3}
-      propertyPath: m_fontColor32.rgba
-      value: 3087007744
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

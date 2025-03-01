@@ -5069,7 +5069,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 1929379839
+    rgba: 3087007744
   m_fontColor: {r: 0, g: 0, b: 0, a: 0.72156864}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -12663,7 +12663,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278190080
   m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -12734,6 +12734,7 @@ GameObject:
   - component: {fileID: 8299682896383488747}
   - component: {fileID: 7118830805243366758}
   - component: {fileID: 8259905426688193900}
+  - component: {fileID: 5970425106377948195}
   m_Layer: 5
   m_Name: Mask
   m_TagString: Untagged
@@ -12796,6 +12797,19 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!114 &5970425106377948195
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6898323289834558362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShowMaskGraphic: 1
 --- !u!1 &7364682037248793034
 GameObject:
   m_ObjectHideFlags: 0

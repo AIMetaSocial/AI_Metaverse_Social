@@ -143,7 +143,7 @@ public class GameUI : MonoBehaviour
 
     ImageRespnseData lastImageResponseData; 
     internal void OpenFullPreview(ImageRespnseData imageRespnseData)
-    {   
+    {       mintBTN.interactable = true;
         lastImageResponseData = imageRespnseData;
         fullPriviewRAW.texture = imageRespnseData.texture;
         fullPreviewPanel.SetActive(true);

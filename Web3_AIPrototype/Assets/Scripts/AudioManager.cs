@@ -26,13 +26,8 @@ public class AudioManager : MonoBehaviour
     }
 
     [SerializeField] AudioClip buttonSound;
-    [SerializeField] AudioClip coinSound;
-    [SerializeField] AudioClip quizCompleted;
-    [SerializeField] AudioClip rightOption;
-    [SerializeField] AudioClip wrongOption;
-    [SerializeField] AudioClip hintClue;
-    [SerializeField] AudioClip startGame;
-    
+    [SerializeField] AudioClip coinSound;    
+    [SerializeField] AudioClip hitSound; 
     public void PlayButtonSound()
     {
         sfx.PlayOneShot(buttonSound);
@@ -41,28 +36,10 @@ public class AudioManager : MonoBehaviour
     {
         sfx.PlayOneShot(coinSound);
     }   
-    public void QuizCompelted(){
-        sfx.PlayOneShot(quizCompleted);
-    }
-     public void TimeOver(){
-        sfx.PlayOneShot(quizCompleted);
-    }
-    public void WrongOption(){
-        sfx.PlayOneShot(wrongOption);
-    }
-    public void RightOption(){
-        sfx.PlayOneShot(rightOption);
-    }
-    public void HintClue(){
-        sfx.PlayOneShot(hintClue);
-    }
-    internal void StartGame()
+   
+    internal void PlayHitSound()
     {
-       sfx.PlayOneShot(startGame);
-    }
-     internal void PlayHitSound()
-    {
-        
+        sfx.PlayOneShot(hitSound);
     }
    
   

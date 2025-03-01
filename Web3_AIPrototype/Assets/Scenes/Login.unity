@@ -1618,9 +1618,9 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 5795825081806472016, guid: 8a67acaf38a3d27468452b675c443cd4,
     type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 39d9fa01e15f5af488f4f66c62dcc30a, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -1753,13 +1753,9 @@ MonoBehaviour:
   sfx: {fileID: 136763002}
   bg_Music: {fileID: 1985627845}
   audioMixer: {fileID: 24100000, guid: 8a67acaf38a3d27468452b675c443cd4, type: 2}
-  buttonSound: {fileID: 0}
-  coinSound: {fileID: 0}
-  quizCompleted: {fileID: 0}
-  rightOption: {fileID: 0}
-  wrongOption: {fileID: 0}
-  hintClue: {fileID: 0}
-  startGame: {fileID: 0}
+  buttonSound: {fileID: 8300000, guid: ef4b39bfc7e981c43b90ea9f8c29f271, type: 3}
+  coinSound: {fileID: 8300000, guid: 02ada8b49eaa89046ae5343356c0ca09, type: 3}
+  hitSound: {fileID: 8300000, guid: 1e07e58cab103cb4db404868722e814d, type: 3}
 --- !u!1001 &1974360093160049761
 PrefabInstance:
   m_ObjectHideFlags: 0
