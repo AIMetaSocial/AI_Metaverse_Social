@@ -5,6 +5,7 @@ using Fusion;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class FusionManager : MonoBehaviour
 {
@@ -14,12 +15,18 @@ public class FusionManager : MonoBehaviour
 
     [Header("UI Setup")]
     public TMP_Text StatusText;
+    [SerializeField] Button playBTN;
     [SerializeField] private NetworkRunner _runnerInstance;
     private static string _shutdownStatus;
 
     public void PlayBTN()
-    {
+    {   
+        playBTN.interactable = false;
         StartGame("openworld");
+    }   
+    
+    public void OpenSettings(){
+        SettingsPanel.Instance?.OpenSettings();
     }
    
 
@@ -67,7 +74,7 @@ public class FusionManager : MonoBehaviour
 
         if (startTask.Result.Ok)
         {
-            StatusText.text = "";
+            StatusText.text = "Joining World";
             //CONNECTED 
 
             Debug.Log("CONNECTED TO SERVER");
@@ -76,7 +83,8 @@ public class FusionManager : MonoBehaviour
         else
         {
             Debug.Log("Connection Error" + startTask.Result.ShutdownReason);
-            StatusText.text = $"Connection Failed: {startTask.Result.ShutdownReason}";
+            StatusText.text = "Connection Failed";
+            playBTN.interactable = true;
         }
     }
 

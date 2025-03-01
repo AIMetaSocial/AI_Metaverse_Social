@@ -7,7 +7,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class AIChatManager : MonoBehaviour
-{
+{   
+    public static AIChatManager Instance;
+    private void Awake() {
+        Instance = this;
+    }
     [SerializeField] GameObject playerMSGPrefab;
     [SerializeField] GameObject AiResponseTextPrefab;
     [SerializeField] GameObject AiResponseImagePrefab;
@@ -23,9 +27,7 @@ public class AIChatManager : MonoBehaviour
         if(currentAIGenerator == null || currentAIGenerator != lastTriggeredAIPlayer){
             ChatGPTIntegration.Init();
 
-            //TODO
-            //DELETE OLD CHAT
-            //DELETE OLD DOWNLOADED TEXTURES
+          
             foreach (Transform _child in parentForMessages)
             {   
                 if(_child.GetChild(0).GetChild(0).TryGetComponent<RawImage>(out RawImage raw)){
@@ -120,11 +122,13 @@ public class AIChatManager : MonoBehaviour
             }
             case AI_TYPE.IMAGE:{
 
-                    lastGeneratedTexture = await ChatGPTIntegration.GenerateAIImage(prompt);
-                    if (lastGeneratedTexture != null)
+                    ImageRespnseData imageRespnseData = await ChatGPTIntegration.GenerateAIImage(prompt);
+                     
+                    if (imageRespnseData != null && imageRespnseData.texture != null )
                     {
                         Debug.Log("IMAGE GENERATED SUCCESSFULLY");
-                        SetAiMessage(lastGeneratedTexture);
+                        SetAiMessage(imageRespnseData);                       
+                        
                     }
                     else
                     {
@@ -199,23 +203,23 @@ public class AIChatManager : MonoBehaviour
         }
 
     }
-    private void SetAiMessage(Texture2D _img)
+    private void SetAiMessage(ImageRespnseData imageRespnseData)
     {
         if (lastGeneratedAIMessage != null)
         {   
             RawImage rawImage = lastGeneratedAIMessage.transform.GetChild(0).GetChild(0).GetComponent<RawImage>();
 
-            rawImage.texture = _img;            
+            rawImage.texture = imageRespnseData.texture;            
             rawImage.gameObject.SetActive(true);            
 
             Destroy(lastGeneratedAIMessage.transform.GetChild(0).GetChild(1).gameObject);
-            rawImage.GetComponent<Button>().onClick.AddListener(()=> OpenImageInFullScreen(rawImage));  
+            rawImage.GetComponent<Button>().onClick.AddListener(()=> OpenImageInFullScreen(imageRespnseData));  
         }
     }
 
-    private void OpenImageInFullScreen(RawImage rawImage)
+    private void OpenImageInFullScreen(ImageRespnseData rawImage)
     {
-        GameUI.Instance?.OpenFullPreview(rawImage.texture);
+        GameUI.Instance?.OpenFullPreview(rawImage);
     }
 
     [SerializeField] float maxWidth;

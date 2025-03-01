@@ -1,18 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using Thirdweb;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LoginManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
+    public static string address;
+    public async void LoginSuccess(){
+
+        address = await ThirdwebManager.Instance.SDK.Wallet.GetAddress();
+        //updater.text = address;
         
+        Debug.Log(address);
+        PlayerPrefs.SetString("Account",address);
+        DatabaseManager.Instance.GetData();
+        await UniTask.Delay(2000);
+        SceneManager.LoadScene("MainMenu");
     }
 }

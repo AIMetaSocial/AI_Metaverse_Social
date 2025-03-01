@@ -33,7 +33,6 @@ RectTransform:
   m_Children:
   - {fileID: 1129452210}
   m_Father: {fileID: 1133994006}
-  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -165,7 +164,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1064820466}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 45}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -227,7 +225,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1133994006
 RectTransform:
   m_ObjectHideFlags: 0
@@ -244,7 +242,6 @@ RectTransform:
   - {fileID: 1698502333}
   - {fileID: 1064820466}
   m_Father: {fileID: 274242315256327783}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -324,7 +321,6 @@ RectTransform:
   - {fileID: 4012223560619557350}
   - {fileID: 4012223562154009974}
   m_Father: {fileID: 1133994006}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -402,7 +398,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2106082221}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -539,7 +534,6 @@ RectTransform:
   m_Children:
   - {fileID: 2100621868}
   m_Father: {fileID: 1133994006}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
@@ -618,7 +612,6 @@ RectTransform:
   m_Children:
   - {fileID: 1133994006}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -687,11 +680,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ccbdf9e70bd0854488357a1885dc041, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rewardCoins: f4010000e8030000d0070000a00f0000
 --- !u!1001 &274242314477782538
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 1698502333}
     m_Modifications:
     - target: {fileID: 3774023069823846380, guid: 415522735767a9c42a29d787c7009174,
@@ -845,6 +840,9 @@ PrefabInstance:
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 415522735767a9c42a29d787c7009174, type: 3}
 --- !u!224 &4012223560619557350 stripped
 RectTransform:
@@ -857,6 +855,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 1698502333}
     m_Modifications:
     - target: {fileID: 3774023069823846380, guid: 415522735767a9c42a29d787c7009174,
@@ -1010,6 +1009,9 @@ PrefabInstance:
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 415522735767a9c42a29d787c7009174, type: 3}
 --- !u!224 &4012223561975291524 stripped
 RectTransform:
@@ -1022,6 +1024,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 1698502333}
     m_Modifications:
     - target: {fileID: 3774023069823846380, guid: 415522735767a9c42a29d787c7009174,
@@ -1175,6 +1178,9 @@ PrefabInstance:
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 415522735767a9c42a29d787c7009174, type: 3}
 --- !u!224 &4012223562154009974 stripped
 RectTransform:
@@ -1187,6 +1193,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 3
     m_TransformParent: {fileID: 1698502333}
     m_Modifications:
     - target: {fileID: 3774023069823846380, guid: 415522735767a9c42a29d787c7009174,
@@ -1335,6 +1342,9 @@ PrefabInstance:
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 415522735767a9c42a29d787c7009174, type: 3}
 --- !u!224 &274242315246263572 stripped
 RectTransform:

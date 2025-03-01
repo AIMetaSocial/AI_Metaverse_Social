@@ -3,18 +3,54 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fusion;
 using System;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
+using TMPro;
+using Thirdweb;
 
 public class PlayerController : NetworkBehaviour
 {
-    [Networked][OnChangedRender(nameof(ApplyNewModel))] int selectedGender { get; set; }
+    [Networked][OnChangedRender(nameof(ApplyNewModel))]public int selectedGender { get; set; }
+    [Networked][OnChangedRender(nameof(ChangedName))]public string playerName { get; set; }
+    [Networked] public string playerAddress { get; set; }
     [SerializeField] GameObject[] playerModels;
     [SerializeField] PlayerInputManager playerInputManager;
     [SerializeField] bool isSpawned = false;
     [SerializeField] Animator animator;
     [SerializeField] PlayerState playerState = PlayerState.IDLE;
-    
+    [Networked] public bool inFight {get; set;}
 
+    [SerializeField] TMP_Text nameText;
+    [SerializeField] GameObject challengeUI;
+    [SerializeField] GameObject healthbarUI;
+    [SerializeField] int maxHealth; 
+    [SerializeField] GameObject[] weaponObjects;
+    [Networked][OnChangedRender(nameof(HandleHealthChange))]public int currentHealth{get; private set;}
+    [SerializeField] Image playerHealthBar;
+    [SerializeField] TMP_Text playerHealth;
+    [SerializeField] GameObject hitArea;
+    void OnEnable()
+    {
+        EditProfilePanel.OnProfileEdited += HandleProfileChange;
+    }
+
+    private void HandleProfileChange()
+    {   
+        if(HasStateAuthority){
+            LocalData data = DatabaseManager.Instance.GetLocalData();
+            selectedGender = data.selectedGender;            
+            playerName =  data.playername;
+        }
+    }
+
+    void OnDisable()
+    {
+        EditProfilePanel.OnProfileEdited -= HandleProfileChange;
+    }
+
+    private void ChangedName()
+    {
+        nameText.text = playerName.ToString();
+    }
     private void ApplyNewModel()
     {
         for (int i = 0; i < playerModels.Length; i++)
@@ -37,12 +73,20 @@ public class PlayerController : NetworkBehaviour
         if (HasStateAuthority)
         {
             playerInputManager = FindObjectOfType<PlayerInputManager>();
-            //selectedGender = gET FROM DATABASE
+            nameText.gameObject.SetActive(false);
+            LocalData data = DatabaseManager.Instance.GetLocalData();
+            
+            selectedGender = data.selectedGender;            
+            playerName =  data.playername;
+            playerAddress = LoginManager.address;
 
             CommonRefs.Instance.SetPlayer(this);
 
             AIChatManager.OnChatToggleEvent += HandleChatToggle;
+            Destroy(hitArea);
         }
+
+        nameText.text = playerName;
         ApplyNewModel();
 
     }
@@ -93,6 +137,20 @@ public class PlayerController : NetworkBehaviour
     {
         if (playerInputManager == null) { return; }
 
+        if(isSpawned && playerState == PlayerState.IDLE){
+            //GeT INPUT FOR MOUSE CLICK
+            bool pressedMouseClick = playerInputManager.GetFireClick();
+            if(pressedMouseClick){
+                if(inFight){
+                    Attack(); 
+                }
+                else{                
+                    CheckForChallengeRaycast();
+                }
+            }
+        }
+
+
         moveAmount = playerInputManager.GetMoveAmount();
         jumpPressed = playerInputManager.GetJumpButton();
         if(!lastJumpPressed && jumpPressed && isGrounded && playerState == PlayerState.IDLE){
@@ -101,7 +159,38 @@ public class PlayerController : NetworkBehaviour
 
     }
 
-  
+    [SerializeField] bool isAttacking = false;
+    [SerializeField] float attackStartDelay=1f;
+    [SerializeField] float attackEndDelay=1f;
+    
+    private void Attack()
+    {
+        if(isAttacking) return;
+
+        isAttacking = true;
+        Debug.Log("Attack");
+        StartCoroutine(attack());
+    }
+    IEnumerator attack(){
+        animator.SetTrigger("Attack");
+        yield return new WaitForSeconds(attackStartDelay);
+        weaponObjects[selectedGender].GetComponent<Collider>().enabled =true;
+        yield return new WaitForSeconds(attackEndDelay);
+        weaponObjects[selectedGender].GetComponent<Collider>().enabled =false;
+        isAttacking = false;
+    }
+
+    [SerializeField] LayerMask challengeLayer;
+    private void CheckForChallengeRaycast()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        if(Physics.Raycast(ray,out RaycastHit hit,Mathf.Infinity,challengeLayer)){
+            if(hit.transform.parent.TryGetComponent<PlayerController>(out PlayerController pc)){
+                if(!inFight && !pc.inFight)
+                pc.SendBattleRequest();
+            }
+        }
+    }
 
     private void HandleMovement()
     {
@@ -195,14 +284,134 @@ public class PlayerController : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other) {
         if(other.transform.TryGetComponent<AI_GeneratorPerson>(out AI_GeneratorPerson aI_GeneratorPerson)){
-            GameUI.Instance?.PlayerInteractionWithAIPlayer(aI_GeneratorPerson,true);
+            if(!inFight){
+                GameUI.Instance?.PlayerInteractionWithAIPlayer(aI_GeneratorPerson,true);
+            }
+        }
+        else if(other.CompareTag("TriggerArea") && other.transform.parent.TryGetComponent<PlayerController>(out PlayerController pc)){
+            if(!HasStateAuthority && !pc.inFight && !inFight && pc!= this){
+                Debug.Log("Entering player Trigger");
+                challengeUI.SetActive(true);
+            }
         }
     }
     private void OnTriggerExit(Collider other) {
         if(other.transform.TryGetComponent<AI_GeneratorPerson>(out AI_GeneratorPerson aI_GeneratorPerson)){
             GameUI.Instance?.PlayerInteractionWithAIPlayer(aI_GeneratorPerson,false);
         }
+        else if(other.CompareTag("TriggerArea")){ 
+                Debug.Log("Exiting player Trigger");
+                challengeUI.SetActive(false);            
+        }
     }
+
+
+    #region Battle
+    public void SendBattleRequest(){
+        challengeUI.SetActive(false);
+        if(!inFight){
+            Rpc_SendBattleRequest(Runner.LocalPlayer,playerName);
+        }
+        GameUI.Instance?.PlayerInteractionWithAIPlayer(null,false);
+    }
+
+    [Rpc(RpcSources.All,RpcTargets.StateAuthority)]
+    public void Rpc_SendBattleRequest(PlayerRef localPlayer, string playerName)
+    {   
+        if(inFight) return;
+
+        Debug.Log("Got Battle Request From player Id : "  + localPlayer.PlayerId + " playername : " + playerName);
+        GameUI.Instance?.ShowIncomingChallengeUI(localPlayer,playerName);
+        GameUI.Instance?.PlayerInteractionWithAIPlayer(null,false);
+    }
+
+
+    [SerializeField] NetworkObject hitParticle;
+     public void GotDamage(int damage, Vector3 hitposition)
+    {
+        if(HasStateAuthority){
+            if(currentHealth>0){
+                Runner.Spawn(hitParticle,hitposition,Quaternion.identity);
+                currentHealth -= damage;
+                if (currentHealth <= 0)
+                {
+                    Died();
+                }
+            }
+        }
+        else{
+            Rpc_GotDamage(damage,hitposition);
+        }
+    }
+    [Rpc(RpcSources.All,RpcTargets.StateAuthority)]
+    public void Rpc_GotDamage(int _damage,Vector3 hitPosition){
+        if(currentHealth>0){
+            Runner.Spawn(hitParticle,hitPosition,Quaternion.identity);
+            currentHealth -= _damage;
+            if(currentHealth<=0){
+                Died();
+            }
+        }
+    }
+
+    private void Died()
+    {
+        BattleManager.Instance?.EndBattle(GameEndReason.LOSE,true);
+    }
+
+    #endregion
+
+    private void LateUpdate() {
+        if(mainCamera==null) return;
+
+        Vector3 camDirection = mainCamera.transform.forward;
+        camDirection.y =0;
+        camDirection.Normalize();
+
+        healthbarUI.transform.rotation = 
+        challengeUI.transform.rotation = 
+        nameText.transform.rotation = Quaternion.LookRotation(camDirection);
+    }
+
+    internal void StartBattle()
+    {       
+        if(HasStateAuthority){
+           currentHealth = maxHealth;
+           StartCoroutine(enableFightBool());
+
+        }
+        challengeUI.SetActive(false);
+        healthbarUI.SetActive(true);
+        UpdateHealthBar();
+        weaponObjects[selectedGender].SetActive(true);       
+
+    }
+    IEnumerator enableFightBool(){
+        yield return new WaitForEndOfFrame();
+        inFight = true;
+    }
+
+     internal void EndBattle()
+    {
+        if(HasStateAuthority){           
+            inFight = false;
+        }
+
+        healthbarUI.SetActive(false);        
+        weaponObjects[selectedGender].SetActive(false);     
+    }
+     private void HandleHealthChange()
+    {
+        UpdateHealthBar();
+    }
+
+    private void UpdateHealthBar()
+    {
+       playerHealthBar.fillAmount = (float)currentHealth/(float)maxHealth;
+       playerHealth.text = currentHealth.ToString();
+    }
+
+   
 }
 
 public enum PlayerState{

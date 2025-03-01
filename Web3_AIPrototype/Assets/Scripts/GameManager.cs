@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
 
 public class GameManager : NetworkBehaviour
-{
+{   
     [SerializeField] GameObject PlayerPrefab;
     [SerializeField] Transform[] spawnPositions;
     public override void Spawned()
@@ -40,6 +41,7 @@ public class GameManager : NetworkBehaviour
     {
         base.FixedUpdateNetwork();
     }
+
 }
 
 public enum GameState{

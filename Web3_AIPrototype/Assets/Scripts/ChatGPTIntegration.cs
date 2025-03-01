@@ -36,7 +36,10 @@ public class ChatGPTIntegration : MonoBehaviour
             lastUserPrompts.Clear();
         }
     }
-    public static async UniTask<Texture2D> GenerateAIImage(string prompt)
+
+    public static string lastImageURLGot;
+    public static string lastDescription;
+    public static async UniTask<ImageRespnseData> GenerateAIImage(string prompt)
     {
 
         
@@ -69,9 +72,10 @@ public class ChatGPTIntegration : MonoBehaviour
 
                 DalleResponse dalleResponse = JsonConvert.DeserializeObject<DalleResponse>(request.downloadHandler.text);
             if (dalleResponse?.data != null && dalleResponse.data.Count > 0)
-            {
-                Texture2D texture2D = await LoadImageFromURL(dalleResponse.data[0].url);
-                return texture2D;
+            {   
+                lastImageURLGot  = dalleResponse.data[0].url;
+                ImageRespnseData imageResponseData = await LoadImageFromURL(dalleResponse.data[0].url,prompt);
+                return imageResponseData;
             }
 
            Debug.Log(request.downloadHandler.text);
@@ -84,7 +88,7 @@ public class ChatGPTIntegration : MonoBehaviour
         return null;
 
     }
-    public static async UniTask<Texture2D> LoadImageFromURL(string imageUrl)
+    public static async UniTask<ImageRespnseData> LoadImageFromURL(string imageUrl,string promptUserAdded)
     {
         using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(imageUrl))
         {
@@ -93,7 +97,14 @@ public class ChatGPTIntegration : MonoBehaviour
             if (www.result == UnityWebRequest.Result.Success)
             {
                 Texture2D texture = DownloadHandlerTexture.GetContent(www);
-                return texture;
+
+                ImageRespnseData imageRespnseData = new ImageRespnseData();
+
+                imageRespnseData.texture = texture;
+                imageRespnseData.description = promptUserAdded;
+                imageRespnseData.url = imageUrl;
+                
+                return imageRespnseData;
             }
         }
         return null;
@@ -198,6 +209,12 @@ public class ChatGPTIntegration : MonoBehaviour
 
 }
 
+[System.Serializable]
+public class ImageRespnseData{
+    public Texture2D texture;
+    public string url;
+    public string description;
+}
 
 [System.Serializable]
 public class DalleResponse

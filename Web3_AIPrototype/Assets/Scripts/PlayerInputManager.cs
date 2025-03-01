@@ -23,20 +23,15 @@ public class PlayerInputManager : MonoBehaviour
         return move;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 
     internal bool GetJumpButton()
     {
        return inputActions.Player.Jump.WasPressedThisFrame();
+    }
+
+    internal bool GetFireClick()
+    {
+        return inputActions.Player.Click.WasPressedThisFrame();
     }
 }

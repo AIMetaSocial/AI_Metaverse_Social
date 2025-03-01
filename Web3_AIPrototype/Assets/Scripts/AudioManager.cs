@@ -60,6 +60,10 @@ public class AudioManager : MonoBehaviour
     {
        sfx.PlayOneShot(startGame);
     }
+     internal void PlayHitSound()
+    {
+        
+    }
    
   
 
@@ -77,5 +81,5 @@ public class AudioManager : MonoBehaviour
         audioMixer.SetFloat("Sound fx", Mathf.Log10(soundFx) * 20);
     }
 
-    
+   
 }
