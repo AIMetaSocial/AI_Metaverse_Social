@@ -8,6 +8,7 @@ using UnityEngine.Networking;
 public class MyNFTCollection : MonoBehaviour
 {
     [SerializeField] GameObject loadingPanel;
+    [SerializeField] GameObject noNFTPanel;
     [SerializeField] GameObject failedPanel;
     [SerializeField] GameObject contentPanel;
 
@@ -19,11 +20,19 @@ public class MyNFTCollection : MonoBehaviour
         loadingPanel.SetActive(true);
         failedPanel.SetActive(false);
         contentPanel.SetActive(false);
+        noNFTPanel.SetActive(false);
 
         List<string> jsonURLS =await BlockChainConnections.Instance.GetMyNFTS();
         List<int> uidList =await BlockChainConnections.Instance.GetMyNFT_UID();
         
         if(jsonURLS!=null && uidList!=null && uidList.Count == jsonURLS.Count){
+
+            if(uidList.Count == 0){
+                
+                loadingPanel.SetActive(false);                
+                noNFTPanel.SetActive(true);
+                return;
+            }
             for (int i = 0; i < jsonURLS.Count; i++)
             {       
                 int temp =i;
@@ -52,14 +61,12 @@ public class MyNFTCollection : MonoBehaviour
             }
 
 
-            loadingPanel.SetActive(false);
-            failedPanel.SetActive(false);
+            loadingPanel.SetActive(false);            
             contentPanel.SetActive(true);
         }
         else{
             
-             loadingPanel.SetActive(false);
-            contentPanel.SetActive(false);
+            loadingPanel.SetActive(false);            
             failedPanel.SetActive(true);
         }
 

@@ -59,7 +59,19 @@ public class GameUI : MonoBehaviour
 
         if(aI_GeneratorPerson!=null)
         {
-            aiPersonName.text = "Do You Want To Chat With " + aI_GeneratorPerson.aiPlayerName+"?";
+            switch (aI_GeneratorPerson.AiType)
+            {
+                case AI_TYPE.CHATBOT:{
+                    aiPersonName.text = "Do You Want To Chat With " + aI_GeneratorPerson.aiPlayerName+"?";
+                    break;
+                }
+                case AI_TYPE.IMAGE:
+                {
+                    aiPersonName.text = "Do You Want Generate Images With AI Powered " + aI_GeneratorPerson.aiPlayerName+"?";
+                    break;
+                }
+            }
+            
             costText.text = aI_GeneratorPerson.chatCost.ToString();
         }
 
@@ -324,7 +336,7 @@ public class GameUI : MonoBehaviour
 
     }
 
-        
+
     #endregion
 
 }

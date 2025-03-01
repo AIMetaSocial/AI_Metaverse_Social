@@ -214,6 +214,7 @@ public class AIChatManager : MonoBehaviour
 
             Destroy(lastGeneratedAIMessage.transform.GetChild(0).GetChild(1).gameObject);
             rawImage.GetComponent<Button>().onClick.AddListener(()=> OpenImageInFullScreen(imageRespnseData));  
+            lastGeneratedAIMessage.transform.GetChild(0).GetChild(1).gameObject.SetActive(true);
         }
     }
 

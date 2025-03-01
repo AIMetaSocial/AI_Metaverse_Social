@@ -52,13 +52,13 @@ public class BlockChainConnections : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A)) ActionTake(0);
-        if (Input.GetKeyDown(KeyCode.B)) ActionTake(1);
-        if (Input.GetKeyDown(KeyCode.C)) ActionTake(2);
-        if (Input.GetKeyDown(KeyCode.D)) ActionTake(3);
-        if (Input.GetKeyDown(KeyCode.E)) ActionTake(4);
-        if (Input.GetKeyDown(KeyCode.F)) ActionTake(5);
-        if (Input.GetKeyDown(KeyCode.G)) ActionTake(6);
+        // if (Input.GetKeyDown(KeyCode.A)) ActionTake(0);
+        // if (Input.GetKeyDown(KeyCode.B)) ActionTake(1);
+        // if (Input.GetKeyDown(KeyCode.C)) ActionTake(2);
+        // if (Input.GetKeyDown(KeyCode.D)) ActionTake(3);
+        // if (Input.GetKeyDown(KeyCode.E)) ActionTake(4);
+        // if (Input.GetKeyDown(KeyCode.F)) ActionTake(5);
+        // if (Input.GetKeyDown(KeyCode.G)) ActionTake(6);
     }
     public  async void ActionTake(int _no)
     {
@@ -152,6 +152,7 @@ public class BlockChainConnections : MonoBehaviour
     }
 
     public async UniTask<bool> Mint(string jsonURL){
+        try{
                 string jsonData = jsonURL;
                 object[] inputParams3 = { jsonData };
                 contract = ThirdwebManager.Instance.SDK.GetContract(contractAdd, abi);
@@ -160,11 +161,16 @@ public class BlockChainConnections : MonoBehaviour
                  Debug.Log("MINT SUCCESS STATUS" + test5.receipt.status);
                  
                 return test5.receipt.status ==1;
+        }
+        catch{
+            return false;
+        }
     }
 
     public float[] coinPackAmount;
    
     public async UniTask<bool> purchaseCoins(int _no){
+        try{
                 //float _amount = 0.00001f;
                 float _amount = coinPackAmount[_no];
                 float decimals = 1000000000000000000; // 18 decimals
@@ -186,9 +192,14 @@ public class BlockChainConnections : MonoBehaviour
                 Debug.Log("Status 02 " + test4.receipt.confirmations);
                  
                 return test4.receipt.status ==1;
+        }
+        catch{
+            return false;
+        }
     }
 
     public async UniTask<List<int>> GetMyNFT_UID(){
+        try {
 
                 object[] inputParams = { LoginManager.address };
                 contract = ThirdwebManager.Instance.SDK.GetContract(contractAdd, abi);
@@ -205,10 +216,15 @@ public class BlockChainConnections : MonoBehaviour
                 }
 
                 return listOfUID;
+        }
+        catch{
+            return null;
+        }
     
     }
 
     public async UniTask<List<string>> GetMyNFTS(){
+        try{
 
                 object[] inputParams = { LoginManager.address };
                 contract = ThirdwebManager.Instance.SDK.GetContract(contractAdd, abi);
@@ -228,18 +244,28 @@ public class BlockChainConnections : MonoBehaviour
                 }
 
                 return jsonURLS;
+
+        }
+        catch{
+            return null;
+        }
     }
 
     public async UniTask<bool> TransferNFT(string _toID,int uid)
-    {
-        object[] inputParams3 = { LoginManager.address, _toID, uid };
-        contract = ThirdwebManager.Instance.SDK.GetContract(contractAdd, abi);
-        var test5 = await contract.Write("transferFrom", inputParams3);
+    {   
+        try{
+            object[] inputParams3 = { LoginManager.address, _toID, uid };
+            contract = ThirdwebManager.Instance.SDK.GetContract(contractAdd, abi);
+            var test5 = await contract.Write("transferFrom", inputParams3);
 
-          Debug.Log("Status 1 " + test5.receipt.status);
-                Debug.Log("Status 01 " + test5.receipt.confirmations); 
+            Debug.Log("Status 1 " + test5.receipt.status);
+                    Debug.Log("Status 01 " + test5.receipt.confirmations); 
 
-        return test5.receipt.status == 1;
+            return test5.receipt.status == 1;
+        }
+        catch{
+             return false;
+        }
     }
 
 

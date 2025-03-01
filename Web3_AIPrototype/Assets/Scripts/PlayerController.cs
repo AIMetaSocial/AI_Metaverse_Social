@@ -285,7 +285,9 @@ public class PlayerController : NetworkBehaviour
     private void OnTriggerEnter(Collider other) {
         if(other.transform.TryGetComponent<AI_GeneratorPerson>(out AI_GeneratorPerson aI_GeneratorPerson)){
             if(!inFight){
-                GameUI.Instance?.PlayerInteractionWithAIPlayer(aI_GeneratorPerson,true);
+                if(HasStateAuthority){
+                    GameUI.Instance?.PlayerInteractionWithAIPlayer(aI_GeneratorPerson,true);
+                }
             }
         }
         else if(other.CompareTag("TriggerArea") && other.transform.parent.TryGetComponent<PlayerController>(out PlayerController pc)){
