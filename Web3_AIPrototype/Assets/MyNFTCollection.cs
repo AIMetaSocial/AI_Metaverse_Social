@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -15,30 +14,46 @@ public class MyNFTCollection : MonoBehaviour
     [SerializeField] NftItem myNFTPrefab;
     [SerializeField] Transform nftParents;
 
-    private async UniTaskVoid OnEnable(){
+    public List<string> jsonURLS;
+    public List<int> uidList;
+    private async UniTaskVoid OnEnable()
+    {
 
         loadingPanel.SetActive(true);
         failedPanel.SetActive(false);
         contentPanel.SetActive(false);
         noNFTPanel.SetActive(false);
 
-        List<string> jsonURLS =await BlockChainConnections.Instance.GetMyNFTS();
-        List<int> uidList =await BlockChainConnections.Instance.GetMyNFT_UID();
-        
-        if(jsonURLS!=null && uidList!=null && uidList.Count == jsonURLS.Count){
+        jsonURLS.Clear();
+        uidList.Clear();
+        jsonURLS = await BlockChainConnections.Instance.GetMyNFTS();
+        uidList = await BlockChainConnections.Instance.GetMyNFT_UID();
 
-            if(uidList.Count == 0){
-                
-                loadingPanel.SetActive(false);                
+        if (jsonURLS != null && uidList != null && uidList.Count == jsonURLS.Count)
+        {
+
+            if (uidList.Count == 0)
+            {
+
+                loadingPanel.SetActive(false);
                 noNFTPanel.SetActive(true);
                 return;
             }
+
+
+            for (int i = nftParents.childCount - 1; i >= 0; i--)
+            {
+                DestroyImmediate(nftParents.GetChild(i).gameObject);
+            }
+
+
             for (int i = 0; i < jsonURLS.Count; i++)
-            {       
-                int temp =i;
+            {
+                int temp = i;
                 Debug.Log(jsonURLS[temp]);
 
-                using (UnityWebRequest request = UnityWebRequest.Get(ConstantManager.jsonGetAPI+jsonURLS[temp]))
+                using (UnityWebRequest request = UnityWebRequest.Get(jsonURLS[temp]))
+                //using (UnityWebRequest request = UnityWebRequest.Get(ConstantManager.jsonGetAPI + jsonURLS[temp]))
                 {
                     await request.SendWebRequest();
 
@@ -49,8 +64,8 @@ public class MyNFTCollection : MonoBehaviour
 
                         NFTResult nFTResult = JsonConvert.DeserializeObject<NFTResult>(json);
 
-                        NftItem nftItem = Instantiate(myNFTPrefab,nftParents);
-                        nftItem.SetData(nFTResult,uidList[temp]);
+                        NftItem nftItem = Instantiate(myNFTPrefab, nftParents);
+                        nftItem.SetData(nFTResult, uidList[temp]);
 
                     }
                     else
@@ -61,33 +76,43 @@ public class MyNFTCollection : MonoBehaviour
             }
 
 
-            loadingPanel.SetActive(false);            
+            loadingPanel.SetActive(false);
             contentPanel.SetActive(true);
         }
-        else{
-            
-            loadingPanel.SetActive(false);            
+        else
+        {
+
+            loadingPanel.SetActive(false);
             failedPanel.SetActive(true);
         }
 
 
-        
+
 
 
 
     }
-    public void CloseMyCollecion(){
+    public void CloseMyCollecion()
+    {
         this.gameObject.SetActive(false);
-    }   
+    }
 
     void OnDisable()
     {
-        
+        jsonURLS.Clear();
+        uidList.Clear();
+
+        for (int i = nftParents.childCount - 1; i >= 0; i--) // Loop from last child to first
+        {
+            Destroy(nftParents.GetChild(i).gameObject);
+        }
+
     }
 }
 
-[System.Serializable] 
-public class NFTResult{
+[System.Serializable]
+public class NFTResult
+{
     public string name;
     public string description;
     public string image;

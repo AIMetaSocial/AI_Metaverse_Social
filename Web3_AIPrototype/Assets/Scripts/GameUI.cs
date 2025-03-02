@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Fusion;
+using Newtonsoft.Json;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -167,16 +168,19 @@ public class GameUI : MonoBehaviour
         string imageDesription = lastImageResponseData.description;
         MessageBox.Instance.ShowMessage("Minting NFT! Please Wait",false);
         
-        string jsonResponse = await UploadImageToServer(imageUrl,imageDesription);
+        string jsonResponse = await UploadImageToServer(ConvertToBase64(lastImageResponseData.texture),imageDesription);
         if(jsonResponse.Contains("error")){
             MessageBox.Instance.ShowMessage("Something Went Wrong!");
             mintBTN.interactable = true;
         }
         else{
             Debug.Log("IMage Uploaded To Server Now Mint It With Json");
+            NFTServerUploadResponse _response = JsonConvert.DeserializeObject<NFTServerUploadResponse>(jsonResponse);
             Debug.Log(jsonResponse);
+            Debug.Log(_response);
+            Debug.Log("https://metaverseaigame.fun/aigeneration/" + _response.json_url);
             //MessageBox.Instance.OkBTN();
-            bool succussMint = await BlockChainConnections.Instance.Mint(jsonResponse);
+            bool succussMint = await BlockChainConnections.Instance.Mint("https://metaverseaigame.fun/aigeneration/" + _response.json_url);
             if(succussMint){
                 mintBTN.interactable = false;
                 MessageBox.Instance.ShowMessage("NFT Minted");
@@ -195,7 +199,7 @@ public class GameUI : MonoBehaviour
         {
             // Create form data
             WWWForm form = new WWWForm();
-            form.AddField("image_url", _imageURL); 
+            form.AddField("base64_image", _imageURL); 
             form.AddField("description", _desc);
             Debug.Log(_imageURL +"-- "+ _desc);
 
@@ -217,6 +221,52 @@ public class GameUI : MonoBehaviour
             }
         }
     }
+
+    public static string ConvertToBase64(Texture2D texture, bool isPNG = true)
+    {
+        byte[] imageBytes;
+
+        // Encode texture to PNG or JPG
+        if (isPNG)
+            imageBytes = texture.EncodeToPNG();
+        else
+            imageBytes = texture.EncodeToJPG();
+
+        // Convert byte array to Base64
+        string base64String = Convert.ToBase64String(imageBytes);
+
+        // Add the appropriate data URI scheme for web usage
+        string mimeType = isPNG ? "image/png" : "image/jpeg";
+        return $"data:{mimeType};base64,{base64String}";
+    }
+    /*public async UniTask<string> UploadImageToServer(string _imageURL, string _desc, CancellationToken cancellationToken = default)
+    {
+        using (UnityWebRequest request = new UnityWebRequest(ConstantManager.imageUpload_api, "POST"))
+        {
+            // Create form data
+            WWWForm form = new WWWForm();
+            form.AddField("image_url", _imageURL);
+            form.AddField("description", _desc);
+            Debug.Log(_imageURL + "-- " + _desc);
+
+            request.uploadHandler = new UploadHandlerRaw(form.data);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+            // Send the request asynchronously with UniTask
+            await request.SendWebRequest().WithCancellation(cancellationToken);
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                return request.downloadHandler.text; // API response as a string
+            }
+            else
+            {
+                Debug.LogError("Upload failed: " + request.error);
+                return "Error: " + request.error;
+            }
+        }
+    }*/
     public void CloseFullPreview(){
         fullPreviewPanel.SetActive(false);
     }
@@ -339,4 +389,10 @@ public class GameUI : MonoBehaviour
 
     #endregion
 
+}
+
+[System.Serializable]
+public class NFTServerUploadResponse
+{
+    public string json_url;
 }

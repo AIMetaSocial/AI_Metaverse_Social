@@ -3,22 +3,26 @@ using Defective.JSON;
 using System;
 using System.Collections.Generic;
 using Thirdweb;
-using TMPro;
 using UnityEngine;
 
 public class BlockChainConnections : MonoBehaviour
-{   
+{
 
     public static BlockChainConnections Instance;
     void Awake()
     {
-        if(Instance == null){
+        if (Instance == null)
+        {
             Instance = this;
             DontDestroyOnLoad(this.gameObject);
         }
-        else{
+        else
+        {
             Destroy(this.gameObject);
         }
+
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+
     }
     // Start is called bef
     //
@@ -28,9 +32,9 @@ public class BlockChainConnections : MonoBehaviour
 
 
     // address of contract
-    public static string contractAdd = "0x1a0289dEC31dfFa86DF6Bf5f04bBf6BC4D73e5cD";
-    
-    
+    public static string contractAdd = "0x85fb57bF40Dd60d03D79Eff5aa2C35Dbfd44D033";
+
+
 
     //string chainId = "97";
     //string networkRPC = "https://bsc-testnet-dataseed.bnbchain.org";
@@ -40,7 +44,7 @@ public class BlockChainConnections : MonoBehaviour
     {
         ThirdwebManager.Instance.Initialize("1313161555");
 
-        
+
 
 
 
@@ -60,11 +64,13 @@ public class BlockChainConnections : MonoBehaviour
         // if (Input.GetKeyDown(KeyCode.F)) ActionTake(5);
         // if (Input.GetKeyDown(KeyCode.G)) ActionTake(6);
     }
-    public  async void ActionTake(int _no)
+    public async void ActionTake(int _no)
     {
+        return;
+        // Break;
         if (!await ThirdwebManager.Instance.SDK.Wallet.IsConnected())
         {
-           // updater.text = "Not Connected yet";
+            // updater.text = "Not Connected yet";
             return;
         }
 
@@ -72,11 +78,11 @@ public class BlockChainConnections : MonoBehaviour
         {
             case 0:
                 address = await ThirdwebManager.Instance.SDK.Wallet.GetAddress();
-               // updater.text = address;
+                // updater.text = address;
                 break;
             case 1:
                 balanace = await ThirdwebManager.Instance.SDK.Wallet.GetBalance();
-               // updater.text = balanace.displayValue;
+                // updater.text = balanace.displayValue;
                 break;
             case 2:
                 /*  contract = ThirdwebManager.Instance.SDK.GetContract(contractAdd, abi);
@@ -84,7 +90,7 @@ public class BlockChainConnections : MonoBehaviour
                   updater.text = test.ToString();
                   break;*/
                 // array of arguments for contract
-                
+
                 //updater.text = test2.ToString();
                 break;
             case 3:
@@ -109,13 +115,13 @@ public class BlockChainConnections : MonoBehaviour
                 {
                     Debug.Log("Value " + test3[i]);
                 }
-               // updater.text = test3.ToString();
+                // updater.text = test3.ToString();
                 break;
             case 5:
 
 
 
-                
+
                 break;
             case 6:
                 /*                float _amount2 = 0.00001f;
@@ -140,8 +146,8 @@ public class BlockChainConnections : MonoBehaviour
 
 
                 //string jsonData = "https://metaverseaigame.fun/aigeneration/json/NFT_67bedbf28fb97.json";
-                
-               // updater.text = test5.ToString();
+
+                // updater.text = test5.ToString();
                 break;
             case 7:
 
@@ -151,120 +157,137 @@ public class BlockChainConnections : MonoBehaviour
 
     }
 
-    public async UniTask<bool> Mint(string jsonURL){
-        try{
-                string jsonData = jsonURL;
-                object[] inputParams3 = { jsonData };
-                contract = ThirdwebManager.Instance.SDK.GetContract(contractAdd, abi);
+    public async UniTask<bool> Mint(string jsonURL)
+    {
+        try
+        {
+            string jsonData = jsonURL;
+            object[] inputParams3 = { jsonData };
+            contract = ThirdwebManager.Instance.SDK.GetContract(contractAdd, abi);
 
-                var test5 = await contract.Write("mintNFT", inputParams3);
-                 Debug.Log("MINT SUCCESS STATUS" + test5.receipt.status);
-                 
-                return test5.receipt.status ==1;
+            var test5 = await contract.Write("mintNFT", inputParams3);
+            Debug.Log("MINT SUCCESS STATUS" + test5.receipt.status);
+
+            return test5.receipt.status == 1;
         }
-        catch{
+        catch
+        {
             return false;
         }
     }
 
     public float[] coinPackAmount;
-   
-    public async UniTask<bool> purchaseCoins(int _no){
-        try{
-                //float _amount = 0.00001f;
-                float _amount = coinPackAmount[_no];
-                float decimals = 1000000000000000000; // 18 decimals
-                float wei = _amount * decimals;
-                string value = Convert.ToDecimal(wei).ToString();
-                // array of arguments for contract
-                object[] inputParams2 = { 0 };
-                contract = ThirdwebManager.Instance.SDK.GetContract(contractAdd, abi);
 
-                var test4 = await contract.Write("purchaseCoins", new TransactionRequest() { value = Convert.ToDecimal(wei).ToString() }, inputParams2);
-                //updater.text = test4.ToString();
+    public async UniTask<bool> purchaseCoins(int _no)
+    {
+        try
+        {
+            //float _amount = 0.00001f;
+            float _amount = coinPackAmount[_no];
+            float decimals = 1000000000000000000; // 18 decimals
+            float wei = _amount * decimals;
+            string value = Convert.ToDecimal(wei).ToString();
+            // array of arguments for contract
+            object[] inputParams2 = { 0 };
+            contract = ThirdwebManager.Instance.SDK.GetContract(contractAdd, abi);
 
-                Debug.Log("Status 1 " + test4.receipt.status);
-                Debug.Log("Status 01 " + test4.receipt.confirmations); 
+            var test4 = await contract.Write("purchaseCoins", new TransactionRequest() { value = Convert.ToDecimal(wei).ToString() }, inputParams2);
+            //updater.text = test4.ToString();
 
-                await UniTask.Delay(5000);
-                var check = await Transaction.WaitForTransactionResult(test4.receipt.transactionHash, await ThirdwebManager.Instance.SDK.Wallet.GetChainId());
-                Debug.Log("Status 2 " + test4.receipt.status);
-                Debug.Log("Status 02 " + test4.receipt.confirmations);
-                 
-                return test4.receipt.status ==1;
+            Debug.Log("Status 1 " + test4.receipt.status);
+            Debug.Log("Status 01 " + test4.receipt.confirmations);
+            /*
+                            await UniTask.Delay(5000);
+                            var check = await Transaction.WaitForTransactionResult(test4.receipt.transactionHash, await ThirdwebManager.Instance.SDK.Wallet.GetChainId());
+                            Debug.Log("Status 2 " + test4.receipt.status);
+                            Debug.Log("Status 02 " + test4.receipt.confirmations);*/
+            if (test4.receipt.status.ToString() == "1") return true;
+            return false;
         }
-        catch{
+        catch
+        {
             return false;
         }
     }
 
-    public async UniTask<List<int>> GetMyNFT_UID(){
-        try {
+    public async UniTask<List<int>> GetMyNFT_UID()
+    {
+        try
+        {
 
-                object[] inputParams = { LoginManager.address };
-                contract = ThirdwebManager.Instance.SDK.GetContract(contractAdd, abi);
+            object[] inputParams = { LoginManager.address };
+            contract = ThirdwebManager.Instance.SDK.GetContract(contractAdd, abi);
 
-                contract = ThirdwebManager.Instance.SDK.GetContract(contractAdd, abi);
+            contract = ThirdwebManager.Instance.SDK.GetContract(contractAdd, abi);
 
-                var test3 = await contract.Read<int[]>("getOwnedNFTs", inputParams);
+            var test3 = await contract.Read<int[]>("getOwnedNFTs", inputParams);
 
-                List<int> listOfUID  = new List<int>();
+            List<int> listOfUID = new List<int>();
 
-                for (int i = 0; i < test3.Length; i++)
+            for (int i = 0; i < test3.Length; i++)
+            {
+                listOfUID.Add(test3[i]);
+            }
+
+            return listOfUID;
+        }
+        catch
+        {
+            return null;
+        }
+
+    }
+
+    public async UniTask<List<string>> GetMyNFTS()
+    {
+        try
+        {
+
+            object[] inputParams = { LoginManager.address };
+            contract = ThirdwebManager.Instance.SDK.GetContract(contractAdd, abi);
+
+            var test2 = await contract.Read<string[]>("getOwnedNFTURIs", inputParams);
+            List<string> jsonURLS = new List<string>();
+            for (int i = 0; i < test2.Length; i++)
+            {
+                try
                 {
-                    listOfUID.Add(test3[i]);
+                    JSONObject jSONObject = new JSONObject(test2[i]);
+                    //  Debug.Log("Value " + test2[i]);
+                    //jsonURLS.Add(jSONObject.GetField("json_url").stringValue);
+                    jsonURLS.Add(test2[i]);
                 }
-
-                return listOfUID;
-        }
-        catch{
-            return null;
-        }
-    
-    }
-
-    public async UniTask<List<string>> GetMyNFTS(){
-        try{
-
-                object[] inputParams = { LoginManager.address };
-                contract = ThirdwebManager.Instance.SDK.GetContract(contractAdd, abi);
-
-                var test2 = await contract.Read<string[]>("getOwnedNFTURIs", inputParams);
-                List<string> jsonURLS  = new List<string>();
-                for (int i = 0; i < test2.Length; i++)
-                {       
-                    try{
-                        JSONObject jSONObject = new JSONObject(test2[i]);
-                      //  Debug.Log("Value " + test2[i]);
-                        jsonURLS.Add(jSONObject.GetField("json_url").stringValue);
-                    }
-                    catch{
-                        continue;
-                    }
+                catch
+                {
+                    continue;
                 }
+            }
 
-                return jsonURLS;
+            return jsonURLS;
 
         }
-        catch{
+        catch
+        {
             return null;
         }
     }
 
-    public async UniTask<bool> TransferNFT(string _toID,int uid)
-    {   
-        try{
+    public async UniTask<bool> TransferNFT(string _toID, int uid)
+    {
+        try
+        {
             object[] inputParams3 = { LoginManager.address, _toID, uid };
             contract = ThirdwebManager.Instance.SDK.GetContract(contractAdd, abi);
             var test5 = await contract.Write("transferFrom", inputParams3);
 
             Debug.Log("Status 1 " + test5.receipt.status);
-                    Debug.Log("Status 01 " + test5.receipt.confirmations); 
+            Debug.Log("Status 01 " + test5.receipt.confirmations);
 
             return test5.receipt.status == 1;
         }
-        catch{
-             return false;
+        catch
+        {
+            return false;
         }
     }
 

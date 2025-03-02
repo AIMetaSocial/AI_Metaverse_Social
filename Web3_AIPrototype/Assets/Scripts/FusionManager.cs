@@ -86,6 +86,9 @@ public class FusionManager : MonoBehaviour
             StatusText.text = "Connection Failed";
             playBTN.interactable = true;
         }
+
+        NetworkProjectConfig.Global.Network.ConnectionTimeout = 150; // Increase if needed
+
     }
 
 
