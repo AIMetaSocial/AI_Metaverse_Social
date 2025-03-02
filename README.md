@@ -23,7 +23,6 @@ The idea was born from the fusion of **AI, Web3, and the Metaverse**, where user
 - **Unity & WebGL** – For immersive 3D environments 🕹️
 - **OpenAI API** – AI-driven chat and content generation 🤖
 - **NEAR Aurora Blockchain** – NFT minting & in-game transactions 🔗
-- **IPFS** – Decentralized NFT storage 📦
 - **Multiplayer Networking** – Real-time online interactions 🌍
 
 ---
@@ -65,7 +64,7 @@ The idea was born from the fusion of **AI, Web3, and the Metaverse**, where user
 
 ### 🔗 Solidity Smart Contract
 - **Blockchain: NEAR Aurora**
-- **Manages NFT minting (MINF NFT 720), transactions, and ownership**
+- **Manages NFT minting (MINF NFT 721), transactions, and ownership**
 - **Integrated in-game economy for earning and trading**
 - **[Smart Contract](https://explorer.testnet.aurora.dev/address/0x85fb57bF40Dd60d03D79Eff5aa2C35Dbfd44D033)** 
 
