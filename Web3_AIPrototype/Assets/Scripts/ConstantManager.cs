@@ -6,5 +6,7 @@ public static class ConstantManager
 
         public const string imageUpload_api="https://metaverseaigame.fun/aigeneration/uploadnew.php";
 
+        public const string imageProxy_api= "https://metaverseaigame.fun/aigeneration/imageproxy.php?url=";
+
         public const string jsonGetAPI ="https://metaverseaigame.fun/aigeneration/";
 }

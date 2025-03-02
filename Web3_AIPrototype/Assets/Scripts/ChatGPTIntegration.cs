@@ -1,10 +1,8 @@
-using System.Collections;
+using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-using Cysharp.Threading.Tasks;
-using Defective.JSON;
-using System.Collections.Generic;
-using Newtonsoft.Json;
 
 
 public class ChatGPTIntegration : MonoBehaviour
@@ -28,11 +26,14 @@ public class ChatGPTIntegration : MonoBehaviour
 
     public static List<string> lastResponses = new List<string>();
     public static List<string> lastUserPrompts = new List<string>();
-    public static void Init(){
-        if(lastResponses!=null){
+    public static void Init()
+    {
+        if (lastResponses != null)
+        {
             lastResponses.Clear();
         }
-        if(lastUserPrompts!=null){
+        if (lastUserPrompts != null)
+        {
             lastUserPrompts.Clear();
         }
     }
@@ -42,83 +43,125 @@ public class ChatGPTIntegration : MonoBehaviour
     public static async UniTask<ImageRespnseData> GenerateAIImage(string prompt)
     {
 
-        
-            
 
-            
-            
-
-            
-        try{
-
-
-        DalleRequest requestData = new DalleRequest { prompt = prompt };
-        string jsonData = JsonConvert.SerializeObject(requestData);
-        
-
-        Debug.Log("Prompt : " + jsonData);
-
-        UnityWebRequest request = new UnityWebRequest(apiUrlForImage, "POST");
-        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
-        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-        request.SetRequestHeader("Authorization", $"Bearer {apiKey}");
-
-        await request.SendWebRequest();
-
-        if (request.result == UnityWebRequest.Result.Success)
+        try
         {
+
+
+            DalleRequest requestData = new DalleRequest { prompt = prompt };
+            string jsonData = JsonConvert.SerializeObject(requestData);
+
+
+            Debug.Log("Prompt : " + jsonData);
+
+            UnityWebRequest request = new UnityWebRequest(apiUrlForImage, "POST");
+            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+            request.SetRequestHeader("Authorization", $"Bearer {apiKey}");
+
+            await request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
 
                 DalleResponse dalleResponse = JsonConvert.DeserializeObject<DalleResponse>(request.downloadHandler.text);
-            if (dalleResponse?.data != null && dalleResponse.data.Count > 0)
-            {   
-                lastImageURLGot  = dalleResponse.data[0].url;
-                ImageRespnseData imageResponseData = await LoadImageFromURL(dalleResponse.data[0].url,prompt);
-                return imageResponseData;
-            }
+                if (dalleResponse?.data != null && dalleResponse.data.Count > 0)
+                {
+                    lastImageURLGot = dalleResponse.data[0].url;
+                    ImageRespnseData imageResponseData = await LoadImageFromURL(dalleResponse.data[0].url, prompt);
+                    return imageResponseData;
+                }
 
-           Debug.Log(request.downloadHandler.text);
-           
-        }
-        else
-        {
-            Debug.LogError("Error: " + request.error + "\nResponse: " + request.downloadHandler.text);
-        }
-        return null;
-        }
-        catch{
+                Debug.Log(request.downloadHandler.text);
+
+            }
+            else
+            {
+                Debug.LogError("Error: " + request.error + "\nResponse: " + request.downloadHandler.text);
+            }
             return null;
         }
-        
+        catch
+        {
+            return null;
+        }
+
 
     }
-    public static async UniTask<ImageRespnseData> LoadImageFromURL(string imageUrl,string promptUserAdded)
+    public static async UniTask<ImageRespnseData> LoadImageFromURL(string imageUrl, string promptUserAdded)
     {
-        using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(imageUrl))
+
+        string finalUrl = ConstantManager.imageProxy_api + UnityWebRequest.EscapeURL(imageUrl);
+
+        using (UnityWebRequest request = UnityWebRequestTexture.GetTexture(finalUrl))
         {
-            await www.SendWebRequest();
+            await request.SendWebRequest();
 
-            if (www.result == UnityWebRequest.Result.Success)
+            if (request.result != UnityWebRequest.Result.Success)
             {
-                Texture2D texture = DownloadHandlerTexture.GetContent(www);
-
+                Debug.Log("Error: " + request.error);
+            }
+            else
+            {
+                Texture2D texture = DownloadHandlerTexture.GetContent(request);
                 ImageRespnseData imageRespnseData = new ImageRespnseData();
 
                 imageRespnseData.texture = texture;
                 imageRespnseData.description = promptUserAdded;
                 imageRespnseData.url = imageUrl;
-                
+
                 return imageRespnseData;
             }
         }
+
+        /* using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(imageUrl))
+         {
+             await www.SendWebRequest();
+
+             if (www.result == UnityWebRequest.Result.Success)
+             {
+                 Texture2D texture = DownloadHandlerTexture.GetContent(www);
+
+                 ImageRespnseData imageRespnseData = new ImageRespnseData();
+
+                 imageRespnseData.texture = texture;
+                 imageRespnseData.description = promptUserAdded;
+                 imageRespnseData.url = imageUrl;
+
+                 return imageRespnseData;
+             }
+         }*/
         return null;
     }
+
+    /* public static async UniTask<ImageRespnseData> LoadImageFromURL(string imageUrl, string promptUserAdded)
+     {
+         using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(imageUrl))
+         {
+             await www.SendWebRequest();
+
+             if (www.result == UnityWebRequest.Result.Success)
+             {
+                 Texture2D texture = DownloadHandlerTexture.GetContent(www);
+
+                 ImageRespnseData imageRespnseData = new ImageRespnseData();
+
+                 imageRespnseData.texture = texture;
+                 imageRespnseData.description = promptUserAdded;
+                 imageRespnseData.url = imageUrl;
+
+                 return imageRespnseData;
+             }
+         }
+         return null;
+     }*/
 
 
 
     #region CHATBOT
-    public static async UniTask<string> GetReplyMessage(string prompt,string initPrompt)
+    public static async UniTask<string> GetReplyMessage(string prompt, string initPrompt)
     {
 
         List<MessageItem> _message = new List<MessageItem>();
@@ -142,7 +185,7 @@ public class ChatGPTIntegration : MonoBehaviour
 
         _message.Add(new MessageItem("user", prompt));
 
-        
+
 
 
 
@@ -167,13 +210,14 @@ public class ChatGPTIntegration : MonoBehaviour
         if (request.result == UnityWebRequest.Result.Success)
         {
 
-             string responseText = request.downloadHandler.text;
+            string responseText = request.downloadHandler.text;
             OpenAIResponse response = JsonConvert.DeserializeObject<OpenAIResponse>(responseText);
-            if(response!= null && response.choices!=null && response.choices.Length>0 && response.choices[0].message!=null){
+            if (response != null && response.choices != null && response.choices.Length > 0 && response.choices[0].message != null)
+            {
                 Debug.Log("Response: " + response.choices[0].message.content);
 
                 if (lastUserPrompts != null)
-                {            
+                {
                     lastUserPrompts.Add(prompt);
                 }
                 else
@@ -183,7 +227,7 @@ public class ChatGPTIntegration : MonoBehaviour
                 }
 
                 if (lastResponses != null)
-                {            
+                {
                     lastResponses.Add(response.choices[0].message.content);
                 }
                 else
@@ -191,13 +235,13 @@ public class ChatGPTIntegration : MonoBehaviour
                     lastUserPrompts = new List<string>();
                     lastUserPrompts.Add(prompt);
                 }
-                
-                
+
+
                 return response.choices[0].message.content;
             }
 
 
-            
+
         }
         else
         {
@@ -215,7 +259,8 @@ public class ChatGPTIntegration : MonoBehaviour
 }
 
 [System.Serializable]
-public class ImageRespnseData{
+public class ImageRespnseData
+{
     public Texture2D texture;
     public string url;
     public string description;
@@ -233,7 +278,7 @@ public class DalleImageData
 }
 [System.Serializable]
 public class DalleRequest
-{   
+{
     public string model = "dall-e-3";  // Explicitly use DALL·E 3
     public string prompt;
     public int n = 1;
@@ -243,26 +288,29 @@ public class DalleRequest
 
 
 [System.Serializable]
-public class ChatGPTMessage{
+public class ChatGPTMessage
+{
     public string model;
     public List<MessageItem> messages;
     public float temperature;
     public float top_p;
-    public int max_tokens;    
-    public ChatGPTMessage(string _modal, List<MessageItem> _message,float _temp,float _topp ,int _maxToken)
+    public int max_tokens;
+    public ChatGPTMessage(string _modal, List<MessageItem> _message, float _temp, float _topp, int _maxToken)
     {
         this.model = _modal;
         this.messages = _message;
         this.temperature = _temp;
         this.top_p = _topp;
-        this.max_tokens = _maxToken;        
+        this.max_tokens = _maxToken;
     }
 }
 [System.Serializable]
-public class MessageItem{
+public class MessageItem
+{
     public string role;
     public string content;
-    public MessageItem(string _role,string _content){
+    public MessageItem(string _role, string _content)
+    {
         this.role = _role;
         this.content = _content;
     }
@@ -270,20 +318,20 @@ public class MessageItem{
 
 
 
- [System.Serializable]
-    public class OpenAIResponse
-    {
-        public Choice[] choices;
-    }
+[System.Serializable]
+public class OpenAIResponse
+{
+    public Choice[] choices;
+}
 
-    [System.Serializable]
-    public class Choice
-    {
-        public Message message;
-    }
-     [System.Serializable]
-    public class Message
-    {
-        public string role;
-        public string content;
-    }
+[System.Serializable]
+public class Choice
+{
+    public Message message;
+}
+[System.Serializable]
+public class Message
+{
+    public string role;
+    public string content;
+}
